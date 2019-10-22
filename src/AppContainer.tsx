@@ -2,22 +2,32 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
 import AllOffers from './screens/AllOffers';
+import SingleOffer from './screens/SingleOffer';
+import LogoTitle from './components/StackNav/LogoTitle';
+import Login from './screens/Login';
 
 const AppNavigator = createStackNavigator({
     //screens
-    AllOffers
+    AllOffers,
+    SingleOffer,
+    Login
 },{
     //generic stylings
-    initialRouteName: 'AllOffers',
+    initialRouteName: 'Login',
     defaultNavigationOptions: {
         headerStyle: {
             backgroundColor: "#000000"
         },
-        title: "Mooko App",
         headerTitleStyle: {
             fontWeight: 'bold'
+        },
+        headerTintColor: "#e96d03",
+        title: "Mooko App",
+        headerTitleContainerStyle: {
+            left: 30,
+            right: 5
         }
-        // headerTitle: () => {}
+        // headerTitle: () => {<LogoTitle />}
     }
 });
 
