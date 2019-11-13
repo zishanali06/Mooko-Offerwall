@@ -8,6 +8,7 @@ import FormInput from '../components/FormInput'
 import FormButton from '../components/FormButton'
 import ErrorMessage from '../components/ErrorMessage'
 import { withFirebaseHOC } from '../config/Firebase'
+import { json, SetAccessToken, getUser } from '../src/utils/api'
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -66,8 +67,22 @@ class Signup extends Component {
       if (response.user.uid) {
         const { uid } = response.user
         const userData = { email, name, uid }
-        await this.props.firebase.createNewUser(userData)
-        this.props.navigation.navigate('App')
+        await this.props.firebase.createNewUser(userData);
+        try {
+            let data = await json('http://rewardhog.herokuapp.com/auth/register', 'POST', { email: this.state.email, password: this.state.password, name: `${this.state.fName} ${this.state.lName}` });
+            if (data) {
+                SetAccessToken(data.token, { userid: data.userid, role: data.role });
+                if (data.role === 'user') {
+                    this.props.navigation.navigate('App');
+                } else {
+                    this.props.navigation.navigate('Login');
+                }
+            } else {
+                this.props.navigation.navigate('Login');
+            };
+        } catch (e) {
+            console.log(e);
+        }
       }
     } catch (error) {
       // console.error(error)

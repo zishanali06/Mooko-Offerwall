@@ -10,6 +10,7 @@ import FormButton from '../components/FormButton'
 import ErrorMessage from '../components/ErrorMessage'
 import AppLogo from '../components/AppLogo'
 import { withFirebaseHOC } from '../config/Firebase'
+import { json, SetAccessToken, getUser } from '../src/utils/api';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -44,7 +45,23 @@ class Login extends Component {
       const response = await this.props.firebase.loginWithEmail(email, password)
 
       if (response.user) {
-        this.props.navigation.navigate('App')
+        try {
+          let result = await json("http://rewardhog.herokuapp.com/auth/login", 'POST', {
+            email: this.state.email,
+            password: this.state.password
+          })
+          if (result) {
+            await SetAccessToken(result.token, { userid: result.userid, role: result.role });
+            let user = await getUser();
+            if (user && user.role === 'user') {
+              this.props.navigation.navigate('App');
+            } else {
+              Alert.alert('Invalid Credentials, Please Try Again')
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
     } catch (error) {
       actions.setFieldError('general', error.message)
@@ -76,47 +93,47 @@ class Login extends Component {
             handleBlur,
             isSubmitting
           }) => (
-            <Fragment>
-              <FormInput
-                name='email'
-                value={values.email}
-                onChangeText={handleChange('email')}
-                placeholder='Enter email'
-                autoCapitalize='none'
-                iconName='ios-mail'
-                iconColor='#2C384A'
-                onBlur={handleBlur('email')}
-              />
-              <ErrorMessage errorValue={touched.email && errors.email} />
-              <FormInput
-                name='password'
-                value={values.password}
-                onChangeText={handleChange('password')}
-                placeholder='Enter password'
-                secureTextEntry={passwordVisibility}
-                iconName='ios-lock'
-                iconColor='#2C384A'
-                onBlur={handleBlur('password')}
-                rightIcon={
-                  <TouchableOpacity onPress={this.handlePasswordVisibility}>
-                    <Ionicons name={rightIcon} size={28} color='grey' />
-                  </TouchableOpacity>
-                }
-              />
-              <ErrorMessage errorValue={touched.password && errors.password} />
-              <View style={styles.buttonContainer}>
-                <FormButton
-                  buttonType='outline'
-                  onPress={handleSubmit}
-                  title='LOGIN'
-                  buttonColor='#039BE5'
-                  disabled={!isValid || isSubmitting}
-                  loading={isSubmitting}
+              <Fragment>
+                <FormInput
+                  name='email'
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  placeholder='Enter email'
+                  autoCapitalize='none'
+                  iconName='ios-mail'
+                  iconColor='#2C384A'
+                  onBlur={handleBlur('email')}
                 />
-              </View>
-              <ErrorMessage errorValue={errors.general} />
-            </Fragment>
-          )}
+                <ErrorMessage errorValue={touched.email && errors.email} />
+                <FormInput
+                  name='password'
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  placeholder='Enter password'
+                  secureTextEntry={passwordVisibility}
+                  iconName='ios-lock'
+                  iconColor='#2C384A'
+                  onBlur={handleBlur('password')}
+                  rightIcon={
+                    <TouchableOpacity onPress={this.handlePasswordVisibility}>
+                      <Ionicons name={rightIcon} size={28} color='grey' />
+                    </TouchableOpacity>
+                  }
+                />
+                <ErrorMessage errorValue={touched.password && errors.password} />
+                <View style={styles.buttonContainer}>
+                  <FormButton
+                    buttonType='outline'
+                    onPress={handleSubmit}
+                    title='LOGIN'
+                    buttonColor='#039BE5'
+                    disabled={!isValid || isSubmitting}
+                    loading={isSubmitting}
+                  />
+                </View>
+                <ErrorMessage errorValue={errors.general} />
+              </Fragment>
+            )}
         </Formik>
         <Button
           title="Don't have an account? Sign Up"
