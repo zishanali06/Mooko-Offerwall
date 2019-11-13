@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { Text, Button, Input } from 'react-native-elements'
+import { Text, Button, Input, Image } from 'react-native-elements'
 import { NavigationStackScreenProps, NavigationStackOptions } from 'react-navigation-stack';
-import { json } from '../utils/api';
+import { json, SetAccessToken, getUser } from '../utils/api';
 
-interface Props {}
+
+interface Props extends NavigationStackScreenProps {}
 interface State {
     email: string,
     password: string
@@ -25,13 +26,34 @@ export default class Login extends React.Component<Props, State> {
         
     }
 
+    async componentDidMount() {
+        try{
+            let user = await getUser();
+            if(user && user.role === 'user'){
+                this.props.navigation.navigate('AllOffers');
+            }
+        } catch(e){
+            console.log(e);
+        }
+    }
+
     async handleLogin() {
         try {
-            let result = await json("http://jobsearcher.herokuapp.com/auth/login", 'POST', {
+            let result = await json("http://rewardhog.herokuapp.com/auth/login", 'POST', {
                 email: this.state.email,
                 password: this.state.password
             })
             console.log(result);
+            if(result){
+                await SetAccessToken(result.token, { userid: result.userid, role: result.role});
+                let user = await getUser();
+                if(user && user.role === 'user') {
+                    console.log(user);
+                    this.props.navigation.navigate('AllOffers');
+                } else {
+                    Alert.alert('Invalid Credentials, Please Try Again')
+                }
+            }
         } catch (error) {
             console.log(error);
             Alert.alert("Contact Server Admin");
@@ -42,6 +64,10 @@ export default class Login extends React.Component<Props, State> {
         return(
             <View style={styles.container}>
                 <View style={{flex:1, justifyContent: 'flex-end'}}>
+                    {/* <Image
+                    style={{ width: 250}}
+                    source={{uri: 'https://mooko.media/wp-content/uploads/2019/08/Mooko_Logo_Hi_Res_Transparent_BG.png'}}
+                    /> */}
                     <Input
                     containerStyle={{marginVertical: 5}}
                     leftIcon={{ type: 'font-awesome', name: 'envelope'}}
@@ -67,6 +93,14 @@ export default class Login extends React.Component<Props, State> {
                     buttonStyle={{backgroundColor: "#e96d03", width: 200}}
                     onPress={()=>{
                         this.handleLogin();
+                    }}/>
+                    <Button 
+                    raised
+                    title="Register"
+                    containerStyle={{margin: 10}}
+                    buttonStyle={{backgroundColor: "#e96d03", width: 200}}
+                    onPress={()=>{
+                        this.props.navigation.navigate('Register');
                     }}/>
                 </View>
             </View>

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Mooko App",
-    "slug": "MookoApp",
+    "name": "Mooko App 5 Test With Offer Links",
+    "slug": "mookoapp5",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -25,6 +25,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": ""
   }
 }

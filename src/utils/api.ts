@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Alert } from 'react-native';
 
 export let getAccessToken = async () => {
     let token: any = await AsyncStorage.getItem('token');
@@ -8,6 +8,10 @@ export let getAccessToken = async () => {
 export let getUser = async () => {
     let user: any = await AsyncStorage.getItem('user');
     return JSON.parse(user);
+}
+
+export let clearStorage = async () => {
+    let remove: any = await AsyncStorage.clear();
 }
 
 export const json = async <T = any>(uri: string, method: string = 'GET', body?: {}) => {
@@ -39,7 +43,7 @@ export const json = async <T = any>(uri: string, method: string = 'GET', body?: 
 
 };
 
-export const SetAccessToken = async (token: string, user: {} = { userid: undefined, role: 'admin' }) => {
+export const SetAccessToken = async (token: string, user: {} = { userid: undefined, role: 'user' }) => {
     await AsyncStorage.setItem('token', token);
     await AsyncStorage.setItem('user', JSON.stringify(user));
 };
