@@ -68,21 +68,17 @@ class Signup extends Component {
         const { uid } = response.user
         const userData = { email, name, uid }
         await this.props.firebase.createNewUser(userData);
-        try {
-            let data = await json('http://rewardhog.herokuapp.com/auth/register', 'POST', { email: this.state.email, password: this.state.password, name: `${this.state.fName} ${this.state.lName}` });
-            if (data) {
-                SetAccessToken(data.token, { userid: data.userid, role: data.role });
-                if (data.role === 'user') {
-                    this.props.navigation.navigate('App');
-                } else {
-                    this.props.navigation.navigate('Login');
-                }
-            } else {
-                this.props.navigation.navigate('Login');
-            };
-        } catch (e) {
-            console.log(e);
-        }
+        let data = await json('http://rewardhog.herokuapp.com/auth/register', 'POST', { email: this.state.email, password: this.state.password, name: `${this.state.fName} ${this.state.lName}` });
+        if (data) {
+          await SetAccessToken(data.token, { userid: data.userid, role: data.role });
+          if (data.role === 'user') {
+            this.props.navigation.navigate('App');
+          } else {
+            this.props.navigation.navigate('Login');
+          }
+        } else {
+          this.props.navigation.navigate('Login');
+        };
       }
     } catch (error) {
       // console.error(error)
@@ -124,90 +120,90 @@ class Signup extends Component {
             isSubmitting,
             setFieldValue
           }) => (
-            <Fragment>
-              <FormInput
-                name='name'
-                value={values.name}
-                onChangeText={handleChange('name')}
-                placeholder='Enter your full name'
-                iconName='md-person'
-                iconColor='#2C384A'
-                onBlur={handleBlur('name')}
-              />
-              <ErrorMessage errorValue={touched.name && errors.name} />
-              <FormInput
-                name='email'
-                value={values.email}
-                onChangeText={handleChange('email')}
-                placeholder='Enter email'
-                autoCapitalize='none'
-                iconName='ios-mail'
-                iconColor='#2C384A'
-                onBlur={handleBlur('email')}
-              />
-              <ErrorMessage errorValue={touched.email && errors.email} />
-              <FormInput
-                name='password'
-                value={values.password}
-                onChangeText={handleChange('password')}
-                placeholder='Enter password'
-                iconName='ios-lock'
-                iconColor='#2C384A'
-                onBlur={handleBlur('password')}
-                secureTextEntry={passwordVisibility}
-                rightIcon={
-                  <TouchableOpacity onPress={this.handlePasswordVisibility}>
-                    <Ionicons name={passwordIcon} size={28} color='grey' />
-                  </TouchableOpacity>
-                }
-              />
-              <ErrorMessage errorValue={touched.password && errors.password} />
-              <FormInput
-                name='password'
-                value={values.confirmPassword}
-                onChangeText={handleChange('confirmPassword')}
-                placeholder='Confirm password'
-                iconName='ios-lock'
-                iconColor='#2C384A'
-                onBlur={handleBlur('confirmPassword')}
-                secureTextEntry={confirmPasswordVisibility}
-                rightIcon={
-                  <TouchableOpacity
-                    onPress={this.handleConfirmPasswordVisibility}>
-                    <Ionicons
-                      name={confirmPasswordIcon}
-                      size={28}
-                      color='grey'
-                    />
-                  </TouchableOpacity>
-                }
-              />
-              <ErrorMessage
-                errorValue={touched.confirmPassword && errors.confirmPassword}
-              />
-              <CheckBox
-                containerStyle={styles.checkBoxContainer}
-                checkedIcon='check-box'
-                iconType='material'
-                uncheckedIcon='check-box-outline-blank'
-                title='Agree to terms and conditions'
-                checkedTitle='You agreed to our terms and conditions'
-                checked={values.check}
-                onPress={() => setFieldValue('check', !values.check)}
-              />
-              <View style={styles.buttonContainer}>
-                <FormButton
-                  buttonType='outline'
-                  onPress={handleSubmit}
-                  title='SIGNUP'
-                  buttonColor='#F57C00'
-                  disabled={!isValid || isSubmitting}
-                  loading={isSubmitting}
+              <Fragment>
+                <FormInput
+                  name='name'
+                  value={values.name}
+                  onChangeText={handleChange('name')}
+                  placeholder='Enter your full name'
+                  iconName='md-person'
+                  iconColor='#2C384A'
+                  onBlur={handleBlur('name')}
                 />
-              </View>
-              <ErrorMessage errorValue={errors.general} />
-            </Fragment>
-          )}
+                <ErrorMessage errorValue={touched.name && errors.name} />
+                <FormInput
+                  name='email'
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  placeholder='Enter email'
+                  autoCapitalize='none'
+                  iconName='ios-mail'
+                  iconColor='#2C384A'
+                  onBlur={handleBlur('email')}
+                />
+                <ErrorMessage errorValue={touched.email && errors.email} />
+                <FormInput
+                  name='password'
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  placeholder='Enter password'
+                  iconName='ios-lock'
+                  iconColor='#2C384A'
+                  onBlur={handleBlur('password')}
+                  secureTextEntry={passwordVisibility}
+                  rightIcon={
+                    <TouchableOpacity onPress={this.handlePasswordVisibility}>
+                      <Ionicons name={passwordIcon} size={28} color='grey' />
+                    </TouchableOpacity>
+                  }
+                />
+                <ErrorMessage errorValue={touched.password && errors.password} />
+                <FormInput
+                  name='password'
+                  value={values.confirmPassword}
+                  onChangeText={handleChange('confirmPassword')}
+                  placeholder='Confirm password'
+                  iconName='ios-lock'
+                  iconColor='#2C384A'
+                  onBlur={handleBlur('confirmPassword')}
+                  secureTextEntry={confirmPasswordVisibility}
+                  rightIcon={
+                    <TouchableOpacity
+                      onPress={this.handleConfirmPasswordVisibility}>
+                      <Ionicons
+                        name={confirmPasswordIcon}
+                        size={28}
+                        color='grey'
+                      />
+                    </TouchableOpacity>
+                  }
+                />
+                <ErrorMessage
+                  errorValue={touched.confirmPassword && errors.confirmPassword}
+                />
+                <CheckBox
+                  containerStyle={styles.checkBoxContainer}
+                  checkedIcon='check-box'
+                  iconType='material'
+                  uncheckedIcon='check-box-outline-blank'
+                  title='Agree to terms and conditions'
+                  checkedTitle='You agreed to our terms and conditions'
+                  checked={values.check}
+                  onPress={() => setFieldValue('check', !values.check)}
+                />
+                <View style={styles.buttonContainer}>
+                  <FormButton
+                    buttonType='outline'
+                    onPress={handleSubmit}
+                    title='SIGNUP'
+                    buttonColor='#F57C00'
+                    disabled={!isValid || isSubmitting}
+                    loading={isSubmitting}
+                  />
+                </View>
+                <ErrorMessage errorValue={errors.general} />
+              </Fragment>
+            )}
         </Formik>
         <Button
           title='Have an account? Login'

@@ -3,11 +3,11 @@ import AllOffers from '../src/screens/AllOffers';
 import SingleOffer from '../src/screens/SingleOffer';
 
 const AppNavigation = createStackNavigator(
-  {
-    //screens
-    AllOffers,
-    SingleOffer,
-}, {
+    {
+        //screens
+        AllOffers,
+        SingleOffer,
+    }, {
     //generic stylings
     initialRouteName: 'AllOffers',
     defaultNavigationOptions: {

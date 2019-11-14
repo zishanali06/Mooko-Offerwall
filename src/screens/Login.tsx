@@ -43,12 +43,10 @@ export default class Login extends React.Component<Props, State> {
                 email: this.state.email,
                 password: this.state.password
             })
-            console.log(result);
             if(result){
                 await SetAccessToken(result.token, { userid: result.userid, role: result.role});
                 let user = await getUser();
                 if(user && user.role === 'user') {
-                    console.log(user);
                     this.props.navigation.navigate('AllOffers');
                 } else {
                     Alert.alert('Invalid Credentials, Please Try Again')

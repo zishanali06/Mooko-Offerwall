@@ -45,22 +45,18 @@ class Login extends Component {
       const response = await this.props.firebase.loginWithEmail(email, password)
 
       if (response.user) {
-        try {
-          let result = await json("http://rewardhog.herokuapp.com/auth/login", 'POST', {
-            email: this.state.email,
-            password: this.state.password
-          })
-          if (result) {
-            await SetAccessToken(result.token, { userid: result.userid, role: result.role });
-            let user = await getUser();
-            if (user && user.role === 'user') {
-              this.props.navigation.navigate('App');
-            } else {
-              Alert.alert('Invalid Credentials, Please Try Again')
-            }
+        let result = await json("http://rewardhog.herokuapp.com/auth/login", 'POST', {
+          email: this.state.email,
+          password: this.state.password
+        })
+        if (result) {
+          await SetAccessToken(result.token, { userid: result.userid, role: result.role });
+          let user = await getUser();
+          if (user && user.role === 'user') {
+            this.props.navigation.navigate('App');
+          } else {
+            Alert.alert('Invalid Credentials, Please Try Again')
           }
-        } catch (error) {
-          console.log(error);
         }
       }
     } catch (error) {

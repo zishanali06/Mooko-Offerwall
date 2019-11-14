@@ -16,7 +16,7 @@ const Offercard: React.SFC<OffercardProps> = (props) => {
 
     const getMember = async () => {
         let user = await getUser();
-        console.log(`${props.offer.item.tracking_url}?sub1=${user.userid}`)
+        console.log(`${props.offer.item.tracking_url}?sub1=${user.userid ? user.userid : '3'}`)
         setUserid(user.userid);
     }
 

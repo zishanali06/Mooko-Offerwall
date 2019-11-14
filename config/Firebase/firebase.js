@@ -8,23 +8,23 @@ firebase.initializeApp(firebaseConfig)
 
 const Firebase = {
   // auth
-  loginWithEmail: (email, password) => {
+  loginWithEmail: (email: any, password: any) => {
     return firebase.auth().signInWithEmailAndPassword(email, password)
   },
-  signupWithEmail: (email, password) => {
+  signupWithEmail: (email: any, password: any) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password)
   },
   signOut: () => {
     return firebase.auth().signOut()
   },
-  checkUserAuth: user => {
+  checkUserAuth: (user: any) => {
     return firebase.auth().onAuthStateChanged(user)
   },
-  passwordReset: email => {
+  passwordReset: (email: any) => {
     return firebase.auth().sendPasswordResetEmail(email)
   },
   // firestore
-  createNewUser: userData => {
+  createNewUser: (userData: any) => {
     return firebase
       .firestore()
       .collection('users')
